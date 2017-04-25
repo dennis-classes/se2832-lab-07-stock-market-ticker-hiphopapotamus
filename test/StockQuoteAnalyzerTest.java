@@ -1,5 +1,6 @@
 import exceptions.InvalidAnalysisState;
 import exceptions.InvalidStockSymbolException;
+import exceptions.StockTickerConnectionError;
 import org.mockito.Mock;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
