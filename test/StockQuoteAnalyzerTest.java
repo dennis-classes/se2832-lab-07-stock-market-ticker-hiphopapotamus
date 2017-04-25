@@ -2,6 +2,7 @@ import exceptions.InvalidAnalysisState;
 import exceptions.InvalidStockSymbolException;
 import exceptions.StockTickerConnectionError;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Null;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,27 +48,7 @@ public class StockQuoteAnalyzerTest {
     public void playAppropriateAudioShouldPlayHappyMusicWhenPercentChangeIsGreaterThan0() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
 
-        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuoteInterface() {
-            @Override
-            public String getSymbol() {
-                return null;
-            }
-
-            @Override
-            public double getLastTrade() {
-                return 0;
-            }
-
-            @Override
-            public double getClose() {
-                return 12;
-            }
-
-            @Override
-            public double getChange() {
-                return 12;
-            }
-        });
+        setGeneratorToAddQuote(null, 0, 12,12);
 
         analyzer.refresh();
         analyzer.playAppropriateAudio();
@@ -79,27 +60,7 @@ public class StockQuoteAnalyzerTest {
     public void playAppropriateAudioShouldPlaySadMusicWhenPercentChangeIsLessThan0() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
 
-        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuoteInterface() {
-            @Override
-            public String getSymbol() {
-                return null;
-            }
-
-            @Override
-            public double getLastTrade() {
-                return 0;
-            }
-
-            @Override
-            public double getClose() {
-                return 0.2;
-            }
-
-            @Override
-            public double getChange() {
-                return -0.4;
-            }
-        });
+        setGeneratorToAddQuote(null, 0, 0.2,-0.4);
 
         analyzer.refresh();
         analyzer.playAppropriateAudio();
@@ -111,27 +72,7 @@ public class StockQuoteAnalyzerTest {
     public void playAppropriateAudioShouldNotPlayAnyMusicWhenPercentChangeIs0() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
 
-        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuoteInterface() {
-            @Override
-            public String getSymbol() {
-                return null;
-            }
-
-            @Override
-            public double getLastTrade() {
-                return 0;
-            }
-
-            @Override
-            public double getClose() {
-                return 0.2;
-            }
-
-            @Override
-            public double getChange() {
-                return 0;
-            }
-        });
+        setGeneratorToAddQuote(null, 0, 0,0.2);
 
         analyzer.refresh();
         analyzer.playAppropriateAudio();
@@ -178,6 +119,34 @@ public class StockQuoteAnalyzerTest {
         setGeneratorToAddQuote("red", 100, 0, 0);
         analyzer.refresh();
         assertEquals(analyzer.getCurrentPrice(), 100, .0001);
+    }
+
+    @Test(expectedExceptions = InvalidAnalysisState.class)
+    public void getPreviousCloseShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        analyzer.getPreviousClose();
+    }
+
+    @Test
+    public void getPreviousCloseShouldReturnLastClosingValueWhenCurrentQuoteIsNotNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        setGeneratorToAddQuote("red", 0, 10, 0);
+        analyzer.refresh();
+        assertEquals(analyzer.getPreviousClose(), 10, .0001);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void getChangeSinceCloseShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        analyzer.getChangeSinceClose();
+    }
+
+    @Test
+    public void getChangeSinceCloseShouldReturnChangeWhenCurrentQuoteIsNotNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        setGeneratorToAddQuote("red", 0, 10, 20);
+        analyzer.refresh();
+        assertEquals(analyzer.getChangeSinceClose(), 10, .0001);
     }
 
     private void setGeneratorToAddQuote(String symbol, double lastTrade, double close, double change) throws Exception {
