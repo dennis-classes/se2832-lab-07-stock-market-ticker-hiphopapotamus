@@ -172,8 +172,8 @@ public class StockQuoteAnalyzerTest {
         analyzer.getCurrentPrice();
     }
 
-    @Test(expectedExceptions = InvalidAnalysisState.class)
-    public void getCurrentPriceReturnLastTradedValueWhenCurrentQuoteIsNotNull() throws Exception {
+    @Test
+    public void getCurrentPriceShouldReturnLastTradedValueWhenCurrentQuoteIsNotNull() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
         setGeneratorToAddQuote("red", 100, 0, 0);
         analyzer.refresh();
