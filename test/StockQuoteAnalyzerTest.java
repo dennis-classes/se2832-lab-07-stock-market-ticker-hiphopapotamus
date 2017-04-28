@@ -37,6 +37,11 @@ public class StockQuoteAnalyzerTest {
         analyzer = new StockQuoteAnalyzer("ZZZZZZZZZ", generatorMock, audioMock);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void constructorShouldThrowExceptionWhenStockQuoteSourceIsNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", null, audioMock);
+    }
+
     @Test
     public void constructorShouldConstructAndSetSymbolWhenSymbolIsValid() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
@@ -146,7 +151,31 @@ public class StockQuoteAnalyzerTest {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
         setGeneratorToAddQuote("red", 0, 10, 20);
         analyzer.refresh();
-        assertEquals(analyzer.getChangeSinceClose(), 10, .0001);
+        assertEquals(analyzer.getChangeSinceClose(), 20, .0001);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void getChangeSinceLastCheckShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        analyzer.getChangeSinceLastCheck();
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void getChangeSinceLastCheckShouldThrowExceptionWhenPreviousQuoteIsNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        setGeneratorToAddQuote("red", 50, 0, 0);
+        analyzer.refresh();
+        analyzer.getChangeSinceLastCheck();
+    }
+
+    @Test
+    public void getChangeSinceLastCheckShouldReturnChangeWhenCurrentQuoteIsNotNull() throws Exception {
+        analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
+        setGeneratorToAddQuote("red", 40, 0, 0);
+        analyzer.refresh();
+        setGeneratorToAddQuote("red", 60, 0, 0);
+        analyzer.refresh();
+        assertEquals(analyzer.getChangeSinceLastCheck(), 20, .0001);
     }
 
     private void setGeneratorToAddQuote(String symbol, double lastTrade, double close, double change) throws Exception {
