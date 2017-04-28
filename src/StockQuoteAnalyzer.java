@@ -148,7 +148,7 @@ public class StockQuoteAnalyzer {
 	 */
 
 	public double getPreviousClose() throws InvalidAnalysisState {
-		if (currentQuote != null) {
+		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		return currentQuote.getClose();
@@ -182,9 +182,9 @@ public class StockQuoteAnalyzer {
 	 */
 	public double getChangeSinceClose() throws InvalidAnalysisState {
 		if (currentQuote == null) {
-			throw new NullPointerException("No quote has ever been retrieved.");
+			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getChange()-currentQuote.getClose();
+		return currentQuote.getChange();
 	}
 
 	/**
@@ -217,6 +217,10 @@ public class StockQuoteAnalyzer {
 	 *             data source.
 	 */
 	public double getChangeSinceLastCheck() throws InvalidAnalysisState {
-		return currentQuote.getLastTrade() - currentQuote.getLastTrade();
+		if (previousQuote == null || currentQuote == null) {
+			throw new InvalidAnalysisState("More than one quote needs to have been retrieved.");
+		}
+
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade();
 	}
 }

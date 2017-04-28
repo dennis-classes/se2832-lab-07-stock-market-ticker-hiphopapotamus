@@ -140,7 +140,7 @@ public class StockQuoteAnalyzerTest {
         assertEquals(analyzer.getPreviousClose(), 10, .0001);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = InvalidAnalysisState.class)
     public void getChangeSinceCloseShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
         analyzer.getChangeSinceClose();
@@ -154,13 +154,13 @@ public class StockQuoteAnalyzerTest {
         assertEquals(analyzer.getChangeSinceClose(), 20, .0001);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = InvalidAnalysisState.class)
     public void getChangeSinceLastCheckShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
         analyzer.getChangeSinceLastCheck();
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = InvalidAnalysisState.class)
     public void getChangeSinceLastCheckShouldThrowExceptionWhenPreviousQuoteIsNull() throws Exception {
         analyzer = new StockQuoteAnalyzer("AAC", generatorMock, audioMock);
         setGeneratorToAddQuote("red", 50, 0, 0);
