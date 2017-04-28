@@ -11,5 +11,4 @@
 | 220           | Not subtracting the previous quote's last trade from the current quote's | Subtract the previous quote's last trade from the current quote's |
 
 ### Code Coverage
-![code coverage](https://ibb.co/e6n6o5)
-
+[![Screen Shot 2017-04-28 at 10.48.17 AM.png](https://s30.postimg.org/yilgnwvo1/Screen_Shot_2017-04-28_at_10.48.17_AM.png)](https://postimg.org/image/rs4zeh8i5/)
